@@ -3,7 +3,6 @@ import java.util.Random;
 public class Person {
 
     public final int p = 79;
-    // find if ten is a fitting number for g
     public final int g = 10;
 
     public int[] generateRandomPrivateKeys() {
