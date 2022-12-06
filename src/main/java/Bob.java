@@ -7,7 +7,6 @@ public class Bob extends Person {
     public double publicKeyBob = computePublicKey(y);
 
     private static ServerSocket server;
-    //socket server port on which it will listen
     private static int port = 9876;
 
     public static void main(String[] args) throws IOException {
@@ -17,17 +16,17 @@ public class Bob extends Person {
             Socket socket = server.accept();
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("Message Received: " + in.readLine());
+            String messageFromAlice = in.readLine();
+            System.out.println("Message Received: " + messageFromAlice);
             out.write("Hi Alice ");
 
             in.close();
             out.close();
             socket.close();
-            //terminate the server if client sends exit request
-            if (in.readLine().equalsIgnoreCase("exit")) break;
+
+            if (messageFromAlice.equalsIgnoreCase("exit")) break;
         }
         System.out.println("Shutting down Socket server!!");
-        //close the ServerSocket object
         server.close();
     }
 }
