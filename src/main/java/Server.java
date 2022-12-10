@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.io.*;
 import java.text.*;
 import java.util.*;
-import java.net.*;
 
 public class Server {
     private ServerSocket serverSocket;
@@ -23,7 +22,7 @@ public class Server {
         // this.stop(); // TODO: should we use this?
     }
 
-    public void start(int port) throws IOException {
+    protected void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         while (true) {
         clientSocket = null;
@@ -54,7 +53,7 @@ public class Server {
         }
         }
 
-    static class ClientHandler extends Thread
+    private static class ClientHandler extends Thread
     {
         DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
         DateFormat fortime = new SimpleDateFormat("hh:mm:ss");

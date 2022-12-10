@@ -13,55 +13,55 @@ public class Person {
     private static final int g = 10;
     private static int port = 6666;
     private static int privateKey;
+    private static String clientName;
 
-    public static String clientName;
-
-    public Person(String name) {
+    protected Person(String name) {
         this.clientName = name;
-        privateKey = generateRandomPrivateKeys()[0];
+        System.out.println(this.clientName + " was born.");
+        privateKey = generateRandomPrivateKey();
     }
 
-    public void startConnection(String ip, int port) throws IOException {
+    protected void startConnection(String ip, int port) throws IOException {
+        System.out.println(this.clientName + " starts connecting to the server.");
         clientSocket = new Socket(ip, port);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
-    public String sendPublicKey() throws IOException {
-        int publicKey = computePublicKey(privateKey);
-        out.println(publicKey);
-        String resp = in.readLine();
-        return resp;
-    }
-
-    public String receivePublicKey(String publicKey) throws IOException {
-        String secretKey = String.valueOf(computeSecretKey(Double.parseDouble(publicKey)));
-        return secretKey;
-    }
-
-    public Integer computeSecretKey (double publicKey) {
-        return (int) Math.pow(publicKey, privateKey) % p;
-    }
-
-    public void stopConnection() throws IOException {
+    protected void stopConnection() throws IOException {
+        System.out.println(this.clientName + " died.");
         in.close();
         out.close();
         clientSocket.close();
     }
 
-
-    public static int[] generateRandomPrivateKeys() {
-        Random random = new Random();
-        return random.ints(2, 1, getP()).toArray();
+    protected String sendPublicKey() throws IOException {
+        int publicKey = computePublicKey();
+        out.println(publicKey);
+        String resp = in.readLine();
+        return resp;
     }
 
-    public static int computePublicKey(int privateKey) {
+
+    protected static int computePublicKey() {
         return (int) Math.pow(getG(), privateKey) % getP();
     }
 
-    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    protected Integer computeSecretKey (String publicKeyString) {
+        Integer publicKey = Integer.valueOf(publicKeyString);
+        return (int) Math.pow(publicKey, privateKey) % p;
+    }
 
-    public static String encryptData(String inputStr, int shiftKey)
+    protected int generateRandomPrivateKey() {
+        Random random = new Random();
+        Integer privateKey = random.nextInt(getP())+1;
+        System.out.println(this.clientName + " picked private key " + privateKey);
+        return privateKey;
+    }
+
+    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+
+    private static String encryptData(String inputStr, int shiftKey)
     {
         inputStr = inputStr.toLowerCase();
         String encryptStr = "";
@@ -75,7 +75,7 @@ public class Person {
         return encryptStr;
     }
 
-    public static String decryptData(String inputStr, int shiftKey)
+    private static String decryptData(String inputStr, int shiftKey)
     {
         inputStr = inputStr.toLowerCase();
         String decryptStr = "";
@@ -92,15 +92,15 @@ public class Person {
         return decryptStr;
     }
 
-    public static int getG() {
+    private static int getG() {
         return g;
     }
 
-    public static int getP() {
+    private static int getP() {
         return p;
     }
 
-    public static int getPort() {
+    private static int getPort() {
         return port;
     }
 }
