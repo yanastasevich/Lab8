@@ -11,13 +11,13 @@ public class Person {
     private BufferedReader in;
     private static final int p = 79;
     private static final int g = 10;
-    private static int port = 6666;
+    private static final int port = 6666;
     private static int privateKey;
     private static String clientName;
 
     protected Person(String name) {
-        this.clientName = name;
-        System.out.println(this.clientName + " was born.");
+        clientName = name;
+        System.out.println(clientName + " was born.");
         privateKey = generateRandomPrivateKey();
     }
 
@@ -37,7 +37,7 @@ public class Person {
 
     protected int generateRandomPrivateKey() {
         Random random = new Random();
-        Integer privateKey = random.nextInt(getP())+1;
+        Integer privateKey = random.nextInt(getP()) + 1;
         System.out.println(this.clientName + " picked private key " + privateKey);
         return privateKey;
     }
@@ -45,39 +45,34 @@ public class Person {
     protected String sendPublicKey() throws IOException {
         int publicKey = computePublicKey();
         out.println(publicKey);
-        String resp = in.readLine();
-        return resp;
+        return in.readLine();
     }
 
     protected static int computePublicKey() {
         return (int) Math.pow(getG(), privateKey) % getP();
     }
 
-    protected Integer computeSecretKey (String publicKeyString) {
-        Integer publicKey = Integer.valueOf(publicKeyString);
+    protected Integer computeSecretKey(String publicKeyString) {
+        int publicKey = Integer.parseInt(publicKeyString);
         return (int) Math.pow(publicKey, privateKey) % p;
     }
 
     protected String sendSecretMessage(String plaintext, Integer secretKey) throws IOException {
         String secretMessage = encryptData(plaintext, secretKey);
         out.println(secretMessage);
-        String resp = in.readLine();
-        return resp;
+        return in.readLine();
     }
 
     protected String readSecretMessage(String ciphertext, Integer secretKey) {
-        String decryptedMessage = decryptData(ciphertext, secretKey);
-        return decryptedMessage;
+        return decryptData(ciphertext, secretKey);
     }
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-    public static String encryptData(String inputStr, int shiftKey)
-    {
+    public static String encryptData(String inputStr, int shiftKey) {
         inputStr = inputStr.toLowerCase();
         String encryptStr = "";
-        for (int i = 0; i < inputStr.length(); i++)
-        {
+        for (int i = 0; i < inputStr.length(); i++) {
             if (String.valueOf(inputStr.charAt(i)) == " ") continue;
             int pos = ALPHABET.indexOf(inputStr.charAt(i));
             int encryptPos = (shiftKey + pos) % 26;
@@ -87,15 +82,13 @@ public class Person {
         return encryptStr;
     }
 
-    private static String decryptData(String inputStr, int shiftKey)
-    {
+    private static String decryptData(String inputStr, int shiftKey) {
         inputStr = inputStr.toLowerCase();
         String decryptStr = "";
-        for (int i = 0; i < inputStr.length(); i++)
-        {
+        for (int i = 0; i < inputStr.length(); i++) {
             int pos = ALPHABET.indexOf(inputStr.charAt(i));
             int decryptPos = (pos - shiftKey) % 26;
-            if (decryptPos < 0){
+            if (decryptPos < 0) {
                 decryptPos = ALPHABET.length() + decryptPos;
             }
             char decryptChar = ALPHABET.charAt(decryptPos);

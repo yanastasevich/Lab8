@@ -1,10 +1,12 @@
 import org.testng.annotations.Test;
+
 import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SocketTest {
     @Test
-public void givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect() throws IOException {
+    public void givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect() throws IOException {
         System.out.println("Test has started...");
         Person alice = new Person("Alice");
         alice.startConnection("127.0.0.1", 6666);
@@ -36,8 +38,8 @@ public void givenGreetingClient_whenServerRespondsWhenStarted_thenCorrect() thro
         System.out.println("Bob thinks Alice said " + bobDecryptionResult);
 
         assertEquals(aliceSecretKey, bobSecretKey);
-        assertEquals("hifrombob", aliceDecryptionResult, );
-        assertEquals("hifromalice", bobDecryptionResult, );
+        assertEquals("hifrombob", aliceDecryptionResult);
+        assertEquals("hifromalice", bobDecryptionResult);
 
     }
 }
