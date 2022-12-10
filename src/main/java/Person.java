@@ -35,13 +35,19 @@ public class Person {
         clientSocket.close();
     }
 
+    protected int generateRandomPrivateKey() {
+        Random random = new Random();
+        Integer privateKey = random.nextInt(getP())+1;
+        System.out.println(this.clientName + " picked private key " + privateKey);
+        return privateKey;
+    }
+
     protected String sendPublicKey() throws IOException {
         int publicKey = computePublicKey();
         out.println(publicKey);
         String resp = in.readLine();
         return resp;
     }
-
 
     protected static int computePublicKey() {
         return (int) Math.pow(getG(), privateKey) % getP();
@@ -52,21 +58,27 @@ public class Person {
         return (int) Math.pow(publicKey, privateKey) % p;
     }
 
-    protected int generateRandomPrivateKey() {
-        Random random = new Random();
-        Integer privateKey = random.nextInt(getP())+1;
-        System.out.println(this.clientName + " picked private key " + privateKey);
-        return privateKey;
+    protected String sendSecretMessage(String plaintext, Integer secretKey) throws IOException {
+        String secretMessage = encryptData(plaintext, secretKey);
+        out.println(secretMessage);
+        String resp = in.readLine();
+        return resp;
+    }
+
+    protected String readSecretMessage(String ciphertext, Integer secretKey) {
+        String decryptedMessage = decryptData(ciphertext, secretKey);
+        return decryptedMessage;
     }
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-    private static String encryptData(String inputStr, int shiftKey)
+    public static String encryptData(String inputStr, int shiftKey)
     {
         inputStr = inputStr.toLowerCase();
         String encryptStr = "";
         for (int i = 0; i < inputStr.length(); i++)
         {
+            if (String.valueOf(inputStr.charAt(i)) == " ") continue;
             int pos = ALPHABET.indexOf(inputStr.charAt(i));
             int encryptPos = (shiftKey + pos) % 26;
             char encryptChar = ALPHABET.charAt(encryptPos);
